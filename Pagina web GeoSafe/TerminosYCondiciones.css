@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+
+.TituloPrin{
+    font-size: 65px;
+    text-align: center;
+    background-color: #20b2b2;
+    border-radius: 20px;
+    width: 37%;
+    margin: auto;
+    color: whitesmoke;
+    margin-bottom: 25px;
+    font-family: "Playfair Display";
+}
+
+.ContenidoP{
+    font-size: 25px;
+    text-align: left;
+    padding: 2%;
+    background-color: #008b8b;
+    border-radius: 20px;
+    width: 90%;
+    margin: auto;
+    font-family: "Source Sans 3";
+    color:whitesmoke;
+    border-style:double;
+
+}
+
+.navbar-brand{
+    font-family: "Playfair Display";
+    color:whitesmoke;
+    font-size: 30px;
+}
+
+.navbarSupportedContent{
+    font-family: "Playfair Display";
+    color: whitesmoke;
+}
+
+.d-flex{
+    font-size: 10px;
+}
+
+.botonses{
+    background-color: #008b8b;
+    color: antiquewhite;
+    font-family: "Source Sans 3";
+    font-size: 30px;
+    text-align: end;
+    border-radius: 30px;
+}
