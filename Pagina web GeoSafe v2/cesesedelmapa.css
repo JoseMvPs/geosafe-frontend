@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Oswald:wght@200..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Oswald:wght@200..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+
+#map { height: 600px; }
+.container {
+            font-optical-sizing: auto;
+            font-size: 30px;
+            text-align: center;
+            display: block;
+            margin: 0 auto;
+
+    }
+    .mapa{
+        font-family: "Playfair Display", serif;
+                font-optical-sizing: auto;
+                font-weight: 900;
+                font-style: italic;
+                font-size: 30px;
+        }
+    .nav-pill{
+        font-family: "Sorce Sans-3";
+        margin-top: auto;
+        padding-bottom: 0px;
+        text-align: center;
+        display: block;
+        margin: auto;
+    }
+    .nav-link-menu{
+       
+            font-family: "Source Sans 3", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 200;
+            font-style: normal;
+          
+    }
+    .sobren{
+        color: #000;
+        text-decoration-color:#fff ;
+      }

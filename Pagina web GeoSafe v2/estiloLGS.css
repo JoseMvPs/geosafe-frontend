@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Berkshire+Swash&family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Berkshire+Swash&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+
+*{
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.top{
+    
+    height: 60px;
+    width: 100%;
+    background-color: #008B8B;
+    opacity: 100%;
+}
+.Inicio{
+    background-color: #008080; border: #008080; border-radius: 30px; margin-left: 50px; margin-top: 5px; opacity: 100; 
+    width: 100px; height: 50px; border-bottom: 2px solid #afeeee;
+}
+.QuienesSomos{
+    background-color: #008080; border: #008080; border-radius: 30px; opacity: 100; margin-left: 5px;
+    height: 50px; border-bottom: 2px solid #afeeee; max-width: 150px;
+}
+
+.top2{
+    height: 5px;
+     width: 100%;
+     background-color: #483D8B;
+ }
+
+  .body{
+    background-image: url(img/fondo.jpg);
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #000000;
+   
+}
+.main{
+    background-color: #008080;
+    border-radius: 30px;
+    align-content: center;
+    margin-top: 10px;
+    max-width: max-content;
+    padding: 60px 60px;
+    width: 100%;
+    text-align: center;
+ 
+    
+}
+.titulo{
+    
+    
+    border-radius: 20px;
+    border: 3px;
+    background-color: #AFEEEE;
+    height: 90px;
+    align-content: center;
+    text-align: center;
+    border-bottom: 3px solid;
+    max-width: 100%;
+    width: 50%;
+    margin: auto;
+    margin-top: -30px;
+    
+        font-family: "Berkshire Swash", serif;
+        font-weight: 400;
+        font-style: normal;  
+}
+
+
+
+.Bienvenido{
+    background-color: #20B2AA;
+    align-content: center;
+    text-align: center;
+    border-radius: 20px;
+    width: 50%;
+    border-bottom: 3px solid;
+    max-width: 100%;
+    margin: auto;
+    margin-top: 10px;
+    
+
+        font-family: "Berkshire Swash", serif;
+        font-weight: 400;
+        font-style: normal;
+}   
+
+.form{
+padding: 15px 25px;
+background-color: #20B2AA;
+border-radius: 30px;
+width: 50%;
+align-content: center;
+text-align: center;
+margin: auto;
+max-width: 100%;
+margin-top: 10px;
+}
+
+
+.entrar{
+    background-color: #AFEEEE;
+    height: 40px;
+    border-radius: 20px;
+    max-width: 100%;
+    align-content: center;
+    text-align: center;
+    margin: auto;
+    color: #526C6C;
+    border: #AFEEEE;
+    width: 150px;
+
+}
+
+
+.registrar{
+    background-color: #98FF98;
+    height: 40px;
+    border-radius: 20px;
+    max-width: 200px;
+    text-align: center;
+    align-content: center;
+    margin-top: 30px;
+    color: #4B5C6F;
+    border: #98FF98;
+    
+}  
