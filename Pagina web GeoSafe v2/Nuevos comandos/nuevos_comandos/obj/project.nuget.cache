@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "gvkfE1BnXkE=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\palac\\Documents\\MEDIA TECNICA 2024 - 2025\\Pagina web GeoSafe\\Nuevos comandos\\nuevos_comandos\\nuevos_comandos.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\palac\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.11\\microsoft.netcore.app.ref.8.0.11.nupkg.sha512",
+    "C:\\Users\\palac\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.11\\microsoft.windowsdesktop.app.ref.8.0.11.nupkg.sha512",
+    "C:\\Users\\palac\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.11\\microsoft.aspnetcore.app.ref.8.0.11.nupkg.sha512",
+    "C:\\Users\\palac\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.11\\microsoft.netcore.app.host.win-x64.8.0.11.nupkg.sha512"
+  ],
+  "logs": []
+}
