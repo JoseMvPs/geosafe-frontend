@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GeoSafe Mapa</title>
 
-    <!-- 1️⃣ CSS de Leaflet -->
+    <!-- CSS de Leaflet (sin integrity) -->
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-o9N1j6Y2Dbsj9jO8P6QwCkK1A9ioH5f4B53Wn3y+Z8w="
-      crossorigin=""
     />
 
     <style>
@@ -26,27 +24,20 @@
   </head>
 
   <body>
-    <!-- 2️⃣ Contenedor del mapa -->
     <div id="map"></div>
 
-    <!-- 3️⃣ Script de Leaflet (debe ir antes de tu JS) -->
-    <script
-      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-      integrity="sha256-o9N1j6Y2Dbsj9jO8P6QwCkK1A9ioH5f4B53Wn3y+Z8w="
-      crossorigin=""
-    ></script>
+    <!-- JS de Leaflet (sin integrity) -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- 4️⃣ Tu script personalizado -->
+    <!-- Tu script -->
     <script>
-      // Crear el mapa
       const map = L.map("map").setView([6.2442, -75.5812], 13);
 
-      // Añadir capa base
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: '&copy; OpenStreetMap contributors',
       }).addTo(map);
 
-      // Cargar marcadores desde tu backend
+      // Ejemplo de conexión a tu backend
       fetch("https://geosafe-api.vercel.app/markers")
         .then((res) => res.json())
         .then((data) => {
@@ -60,4 +51,5 @@
     </script>
   </body>
 </html>
+
 
