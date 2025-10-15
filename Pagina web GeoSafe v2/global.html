@@ -14,13 +14,24 @@
   <style>
     body { margin: 0; font-family: Arial; }
     #map { height: 100vh; width: 100%; }
+    .delete-btn {
+      background: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .delete-btn:hover {
+      background: #e60000;
+    }
   </style>
 </head>
 <body>
   <div id="map"></div>
 
   <script>
-    const API_URL = "https://geosafe-backend.vercel.app"; // tu backend
+    const API_URL = "https://geosafe-backend.vercel.app"; // tu backend FastAPI
     const map = L.map("map").setView([6.2442, -75.5812], 13);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -29,26 +40,53 @@
 
     let marcadores = [];
 
-    async function actualizarMarcadores() {
+    async function cargarMarcadores() {
       const res = await fetch(`${API_URL}/markers`);
       const data = await res.json();
 
-      // Eliminar marcadores anteriores
+      // Eliminar los marcadores anteriores
       marcadores.forEach(m => map.removeLayer(m));
       marcadores = [];
 
-      // Agregar nuevos
       data.forEach((m) => {
-        const marker = L.marker([m.lat, m.lon]).addTo(map).bindPopup(m.nombre);
+        const marker = L.marker([m.lat, m.lon]).addTo(map);
+
+        // Popup con botón de eliminar
+        const popupContent = `
+          <b>${m.nombre}</b><br>
+          <button class="delete-btn" onclick="eliminarMarcador(${m.id})">
+            Eliminar
+          </button>
+        `;
+        marker.bindPopup(popupContent);
+
         marcadores.push(marker);
       });
     }
 
-    // Cargar al iniciar
-    actualizarMarcadores();
+    // Función para eliminar un marcador por ID
+    async function eliminarMarcador(id) {
+      const confirmar = confirm("¿Seguro que quieres eliminar este marcador?");
+      if (!confirmar) return;
 
-    // Actualizar cada 10 segundos
-    setInterval(actualizarMarcadores, 10000);
+      const res = await fetch(`${API_URL}/markers/${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        alert("Marcador eliminado.");
+        cargarMarcadores(); // refresca el mapa
+      } else {
+        alert("Error al eliminar marcador.");
+      }
+    }
+
+    // Hacer accesible la función globalmente (para usarla en el onclick)
+    window.eliminarMarcador = eliminarMarcador;
+
+    // Cargar al iniciar y refrescar cada 10s
+    cargarMarcadores();
+    setInterval(cargarMarcadores, 10000);
   </script>
 </body>
 </html>
