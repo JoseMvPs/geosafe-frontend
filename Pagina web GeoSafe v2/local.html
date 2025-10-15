@@ -1,45 +1,63 @@
-<script>
-const API_URL = "https://geosafe-backend.vercel.app"; // <-- tu URL real del backend
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GeoSafe Mapa</title>
 
-// Crear el mapa Leaflet
-const map = L.map('map').setView([6.2442, -75.5812], 12); // Medellín
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
+    <!-- 1️⃣ CSS de Leaflet -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-o9N1j6Y2Dbsj9jO8P6QwCkK1A9ioH5f4B53Wn3y+Z8w="
+      crossorigin=""
+    />
 
-// Cargar marcadores guardados
-async function loadMarkers() {
-  try {
-    const res = await fetch(`${API_URL}/markers`);
-    const data = await res.json();
-    data.markers.forEach(m => {
-      L.marker([m.lat, m.lng]).addTo(map);
-    });
-  } catch (err) {
-    console.error("Error cargando marcadores:", err);
-  }
-}
+    <style>
+      body, html {
+        margin: 0;
+        height: 100%;
+      }
+      #map {
+        height: 100vh;
+        width: 100%;
+      }
+    </style>
+  </head>
 
-// Guardar nuevo marcador
-async function saveMarker(lat, lng) {
-  try {
-    const res = await fetch(`${API_URL}/markers?lat=${lat}&lng=${lng}`, {
-      method: 'POST'
-    });
-    const data = await res.json();
-    console.log("Marcador guardado:", data);
-  } catch (err) {
-    console.error("Error guardando marcador:", err);
-  }
-}
+  <body>
+    <!-- 2️⃣ Contenedor del mapa -->
+    <div id="map"></div>
 
-// Evento click para colocar marcador
-map.on('click', async (e) => {
-  const { lat, lng } = e.latlng;
-  L.marker([lat, lng]).addTo(map);
-  await saveMarker(lat, lng);
-});
+    <!-- 3️⃣ Script de Leaflet (debe ir antes de tu JS) -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-o9N1j6Y2Dbsj9jO8P6QwCkK1A9ioH5f4B53Wn3y+Z8w="
+      crossorigin=""
+    ></script>
 
-loadMarkers();
-</script>
+    <!-- 4️⃣ Tu script personalizado -->
+    <script>
+      // Crear el mapa
+      const map = L.map("map").setView([6.2442, -75.5812], 13);
+
+      // Añadir capa base
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '&copy; OpenStreetMap contributors',
+      }).addTo(map);
+
+      // Cargar marcadores desde tu backend
+      fetch("https://geosafe-api.vercel.app/markers")
+        .then((res) => res.json())
+        .then((data) => {
+          data.forEach((m) => {
+            L.marker([m.lat, m.lon])
+              .addTo(map)
+              .bindPopup(m.nombre || "Marcador");
+          });
+        })
+        .catch((err) => console.error("Error cargando marcadores:", err));
+    </script>
+  </body>
+</html>
 
