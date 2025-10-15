@@ -1,40 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <meta charset="utf-8">
-  <title>Mapa Global - Leaflet + Firebase</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-  <script src="firebaseConfig.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeoSafe - Mapa Global</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
   <style>
-    #map { height: 100vh; }
+    body { margin: 0; font-family: Arial; }
+    #map { height: 100vh; width: 100%; }
   </style>
 </head>
 <body>
-  <h2 style="text-align:center;">Mapa Global - Puntos guardados</h2>
   <div id="map"></div>
 
   <script>
-    const map = L.map('map').setView([6.2442, -75.5812], 12);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
+    const API_URL = "https://geosafe-api.vercel.app"; // tu backend
+    const map = L.map("map").setView([6.2442, -75.5812], 13);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors",
     }).addTo(map);
 
-    // Escuchar los datos en tiempo real
-    db.ref('puntos').on('value', (snapshot) => {
-      const data = snapshot.val();
-      map.eachLayer(layer => {
-        if (layer instanceof L.Marker) map.removeLayer(layer);
+    let marcadores = [];
+
+    async function actualizarMarcadores() {
+      const res = await fetch(`${API_URL}/markers`);
+      const data = await res.json();
+
+      // Eliminar marcadores anteriores
+      marcadores.forEach(m => map.removeLayer(m));
+      marcadores = [];
+
+      // Agregar nuevos
+      data.forEach((m) => {
+        const marker = L.marker([m.lat, m.lon]).addTo(map).bindPopup(m.nombre);
+        marcadores.push(marker);
       });
-      for (let id in data) {
-        const punto = data[id];
-        L.marker([punto.lat, punto.lng])
-          .addTo(map)
-          .bindPopup(`Lat: ${punto.lat.toFixed(4)}, Lng: ${punto.lng.toFixed(4)}`);
-      }
-    });
+    }
+
+    // Cargar al iniciar
+    actualizarMarcadores();
+
+    // Actualizar cada 10 segundos
+    setInterval(actualizarMarcadores, 10000);
   </script>
 </body>
 </html>
+
+
