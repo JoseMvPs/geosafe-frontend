@@ -1,45 +1,45 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Mapa Local - Leaflet + Firebase</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-  <script src="firebaseConfig.js"></script>
-  <style>
-    #map { height: 100vh; }
-  </style>
-</head>
-<body>
-  <h2 style="text-align:center;">Selecciona un punto en Medellín</h2>
-  <div id="map"></div>
+<script>
+const API_URL = "https://geosafe-backend.vercel.app"; // <-- tu URL real del backend
 
-  <script>
-    // Crear mapa centrado en Medellín
-    const map = L.map('map').setView([6.2442, -75.5812], 13);
+// Crear el mapa Leaflet
+const map = L.map('map').setView([6.2442, -75.5812], 12); // Medellín
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-    }).addTo(map);
-
-    let marker;
-
-    map.on('click', (e) => {
-      const { lat, lng } = e.latlng;
-
-      if (marker) map.removeLayer(marker);
-      marker = L.marker([lat, lng]).addTo(map).bindPopup("Punto guardado").openPopup();
-
-      // Guardar en Firebase
-      db.ref('puntos').push({
-        lat: lat,
-        lng: lng,
-        fecha: new Date().toISOString()
-      });
-      alert("Marcador guardado correctamente ✅");
+// Cargar marcadores guardados
+async function loadMarkers() {
+  try {
+    const res = await fetch(`${API_URL}/markers`);
+    const data = await res.json();
+    data.markers.forEach(m => {
+      L.marker([m.lat, m.lng]).addTo(map);
     });
-  </script>
-</body>
-</html>
+  } catch (err) {
+    console.error("Error cargando marcadores:", err);
+  }
+}
+
+// Guardar nuevo marcador
+async function saveMarker(lat, lng) {
+  try {
+    const res = await fetch(`${API_URL}/markers?lat=${lat}&lng=${lng}`, {
+      method: 'POST'
+    });
+    const data = await res.json();
+    console.log("Marcador guardado:", data);
+  } catch (err) {
+    console.error("Error guardando marcador:", err);
+  }
+}
+
+// Evento click para colocar marcador
+map.on('click', async (e) => {
+  const { lat, lng } = e.latlng;
+  L.marker([lat, lng]).addTo(map);
+  await saveMarker(lat, lng);
+});
+
+loadMarkers();
+</script>
+
