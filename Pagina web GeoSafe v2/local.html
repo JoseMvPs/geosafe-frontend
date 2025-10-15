@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mapa Local - Leaflet + Firebase</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <script src="firebaseConfig.js"></script>
+  <style>
+    #map { height: 100vh; }
+  </style>
+</head>
+<body>
+  <h2 style="text-align:center;">Selecciona un punto en Medellín</h2>
+  <div id="map"></div>
+
+  <script>
+    // Crear mapa centrado en Medellín
+    const map = L.map('map').setView([6.2442, -75.5812], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+    }).addTo(map);
+
+    let marker;
+
+    map.on('click', (e) => {
+      const { lat, lng } = e.latlng;
+
+      if (marker) map.removeLayer(marker);
+      marker = L.marker([lat, lng]).addTo(map).bindPopup("Punto guardado").openPopup();
+
+      // Guardar en Firebase
+      db.ref('puntos').push({
+        lat: lat,
+        lng: lng,
+        fecha: new Date().toISOString()
+      });
+      alert("Marcador guardado correctamente ✅");
+    });
+  </script>
+</body>
+</html>

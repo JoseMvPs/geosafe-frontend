@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mapa Global - Leaflet + Firebase</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <script src="firebaseConfig.js"></script>
+  <style>
+    #map { height: 100vh; }
+  </style>
+</head>
+<body>
+  <h2 style="text-align:center;">Mapa Global - Puntos guardados</h2>
+  <div id="map"></div>
+
+  <script>
+    const map = L.map('map').setView([6.2442, -75.5812], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+    }).addTo(map);
+
+    // Escuchar los datos en tiempo real
+    db.ref('puntos').on('value', (snapshot) => {
+      const data = snapshot.val();
+      map.eachLayer(layer => {
+        if (layer instanceof L.Marker) map.removeLayer(layer);
+      });
+      for (let id in data) {
+        const punto = data[id];
+        L.marker([punto.lat, punto.lng])
+          .addTo(map)
+          .bindPopup(`Lat: ${punto.lat.toFixed(4)}, Lng: ${punto.lng.toFixed(4)}`);
+      }
+    });
+  </script>
+</body>
+</html>
