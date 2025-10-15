@@ -3,113 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GeoSafe - Mapa interactivo</title>
+  <title>GeoSafe - Editor de Mapa</title>
 
-  <!-- Leaflet -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    crossorigin=""
   />
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    crossorigin=""
-  ></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f7f8fa;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      height: 100vh;
-    }
-
-    h1 {
-      margin: 10px;
-      color: #222;
-    }
-
-    #map {
-      height: 90vh;
-      width: 90vw;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .leaflet-popup-content {
-      font-size: 14px;
-      font-weight: 500;
-    }
+    body { margin: 0; font-family: Arial; }
+    #map { height: 100vh; width: 100%; }
   </style>
 </head>
-
 <body>
-  <h1>🗺️ GeoSafe - Mapa de Marcadores</h1>
   <div id="map"></div>
 
   <script>
-    // 👇 CAMBIA ESTA LÍNEA POR TU BACKEND EN VERCEL
-    const API_URL = "https://geosafe-backend.vercel.app";
-
-    // Inicializar mapa centrado en Medellín
+    const API_URL = "https://geosafe-api.vercel.app"; // tu backend
     const map = L.map("map").setView([6.2442, -75.5812], 13);
 
-    // Cargar los tiles de OpenStreetMap
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors",
     }).addTo(map);
 
-    // 🟢 Cargar marcadores existentes desde el backend
+    // Mostrar marcadores guardados
     async function cargarMarcadores() {
-      try {
-        const res = await fetch(`${API_URL}/markers`);
-        const data = await res.json();
-
-        data.forEach((m) => {
-          L.marker([m.lat, m.lon]).addTo(map).bindPopup(`<b>${m.nombre}</b>`);
-        });
-      } catch (error) {
-        console.error("❌ Error al obtener marcadores:", error);
-        alert("No se pudieron cargar los marcadores del servidor.");
-      }
+      const res = await fetch(`${API_URL}/markers`);
+      const data = await res.json();
+      data.forEach((m) => {
+        L.marker([m.lat, m.lon]).addTo(map).bindPopup(m.nombre);
+      });
     }
 
-    // 🔴 Agregar marcador al hacer clic en el mapa
+    // Agregar nuevos marcadores
     map.on("click", async (e) => {
-      const nombre = prompt("📝 Escribe un nombre o descripción para este marcador:");
+      const nombre = prompt("Nombre del marcador:");
       if (!nombre) return;
 
       const nuevo = { lat: e.latlng.lat, lon: e.latlng.lng, nombre };
+      const res = await fetch(`${API_URL}/markers`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nuevo),
+      });
 
-      try {
-        const res = await fetch(`${API_URL}/markers`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(nuevo),
-        });
-
-        if (!res.ok) throw new Error("Error al guardar en el backend");
-
-        L.marker([nuevo.lat, nuevo.lon])
-          .addTo(map)
-          .bindPopup(`<b>${nombre}</b>`)
-          .openPopup();
-
-      } catch (error) {
-        console.error("❌ Error al guardar marcador:", error);
-        alert("No se pudo guardar el marcador en el servidor.");
+      if (res.ok) {
+        L.marker([nuevo.lat, nuevo.lon]).addTo(map).bindPopup(nombre);
+      } else {
+        alert("Error al guardar el marcador");
       }
     });
 
-    // Llamar a la función inicial
     cargarMarcadores();
   </script>
 </body>
 </html>
-
 
 
 
