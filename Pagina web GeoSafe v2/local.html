@@ -20,28 +20,20 @@
   <div id="map"></div>
 
   <script>
-    const API_URL = "https://geosafe-backend.vercel.app"; // tu backend
+    const API_URL = "https://geosafe-backend.vercel.app"; // tu backend FastAPI
     const map = L.map("map").setView([6.2442, -75.5812], 13);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors",
     }).addTo(map);
 
-    // Mostrar marcadores guardados
-    async function cargarMarcadores() {
-      const res = await fetch(`${API_URL}/markers`);
-      const data = await res.json();
-      data.forEach((m) => {
-        L.marker([m.lat, m.lon]).addTo(map).bindPopup(m.nombre);
-      });
-    }
-
-    // Agregar nuevos marcadores
+    // Al hacer clic, agrega un marcador nuevo al backend
     map.on("click", async (e) => {
       const nombre = prompt("Nombre del marcador:");
       if (!nombre) return;
 
       const nuevo = { lat: e.latlng.lat, lon: e.latlng.lng, nombre };
+
       const res = await fetch(`${API_URL}/markers`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -49,18 +41,14 @@
       });
 
       if (res.ok) {
-        L.marker([nuevo.lat, nuevo.lon]).addTo(map).bindPopup(nombre);
+        alert("Marcador guardado correctamente.");
       } else {
-        alert("Error al guardar el marcador");
+        alert("Error al guardar el marcador.");
       }
     });
-
-    cargarMarcadores();
   </script>
 </body>
 </html>
-
-
 
 
 
