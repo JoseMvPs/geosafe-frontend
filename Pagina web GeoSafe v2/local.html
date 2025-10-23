@@ -3,52 +3,184 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GeoSafe - Editor de Mapa</title>
+  <title>GeoSafe - Registro de Incidentes</title>
 
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
-    body { margin: 0; font-family: Arial; }
+    body { margin: 0; font-family: 'Poppins', sans-serif; background-color: #f4f4f4; }
     #map { height: 100vh; width: 100%; }
+
+    .form-container {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      width: 300px;
+      z-index: 1000;
+      display: none;
+    }
+
+    .form-container h3 {
+      margin-top: 0;
+      text-align: center;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: 600;
+      color: #444;
+    }
+
+    select, textarea, input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 5px;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    button {
+      margin-top: 15px;
+      width: 100%;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .close-btn {
+      background: #dc3545;
+      margin-top: 8px;
+    }
+
+    .close-btn:hover {
+      background: #a71d2a;
+    }
   </style>
 </head>
 <body>
   <div id="map"></div>
 
+  <div class="form-container" id="incidentForm">
+    <h3>Registrar Incidente</h3>
+
+    <label for="tipo">Tipo de incidente</label>
+    <select id="tipo">
+      <option value="">Seleccione...</option>
+      <option>Hurto</option>
+      <option>Asesinato</option>
+      <option>Robo</option>
+      <option>Accidente</option>
+      <option>Otro</option>
+    </select>
+
+    <label for="descripcion">Descripción</label>
+    <textarea id="descripcion" placeholder="Describa lo ocurrido..."></textarea>
+
+    <label for="hora">Hora del suceso</label>
+    <input type="text" id="hora" readonly />
+
+    <label for="notas">Notas del cliente</label>
+    <textarea id="notas" placeholder="Comentarios adicionales (opcional)"></textarea>
+
+    <button id="guardarBtn">Guardar incidente</button>
+    <button class="close-btn" id="cerrarBtn">Cancelar</button>
+  </div>
+
   <script>
-    const API_URL = "https://geosafe-backend.vercel.app"; // tu backend FastAPI
+    const API_URL = "https://geosafe-backend.vercel.app";
     const map = L.map("map").setView([6.2442, -75.5812], 13);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "&copy; OpenStreetMap contributors",
+      attribution: "&copy; OpenStreetMap contributors"
     }).addTo(map);
 
-    // Al hacer clic, agrega un marcador nuevo al backend
-    map.on("click", async (e) => {
-      const nombre = prompt("Nombre del marcador:");
-      if (!nombre) return;
+    let tempLat, tempLng;
 
-      const nuevo = { lat: e.latlng.lat, lon: e.latlng.lng, nombre };
+    const form = document.getElementById("incidentForm");
+    const tipo = document.getElementById("tipo");
+    const descripcion = document.getElementById("descripcion");
+    const hora = document.getElementById("hora");
+    const notas = document.getElementById("notas");
+
+    // Mostrar formulario al hacer clic en el mapa
+    map.on("click", (e) => {
+      tempLat = e.latlng.lat;
+      tempLng = e.latlng.lng;
+
+      // Hora actual universal
+      const now = new Date();
+      hora.value = now.toUTCString();
+
+      form.style.display = "block";
+    });
+
+    document.getElementById("cerrarBtn").addEventListener("click", () => {
+      form.style.display = "none";
+    });
+
+    document.getElementById("guardarBtn").addEventListener("click", async () => {
+      if (!tipo.value || !descripcion.value) {
+        alert("Por favor, complete todos los campos obligatorios.");
+        return;
+      }
+
+      const data = {
+        lat: tempLat,
+        lon: tempLng,
+        tipo: tipo.value,
+        descripcion: descripcion.value,
+        hora: hora.value,
+        notas: notas.value
+      };
 
       const res = await fetch(`${API_URL}/markers`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(nuevo),
+        body: JSON.stringify(data)
       });
 
       if (res.ok) {
-        alert("Marcador guardado correctamente.");
+        alert("Incidente registrado correctamente.");
+        form.style.display = "none";
+        tipo.value = "";
+        descripcion.value = "";
+        notas.value = "";
       } else {
-        alert("Error al guardar el marcador.");
+        alert("Error al guardar el incidente.");
       }
     });
   </script>
 </body>
 </html>
+
+      }
+    });
+  </script>
+</body>
+</html>
+
 
 
 
