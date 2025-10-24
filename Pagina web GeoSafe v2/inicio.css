@@ -1,109 +1,128 @@
-/* ======= BASE ======= */
+/* ===== BASE ===== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
 }
 
 body {
+  font-family: 'Poppins', sans-serif;
   background-color: #f8fafc;
   color: #1e293b;
 }
 
-/* ======= NAVBAR ======= */
+/* ===== NAVBAR ===== */
 .navbar {
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 .navbar-brand {
-  font-weight: 600;
   color: #0d6efd !important;
+  font-size: 1.4rem;
 }
 
 .nav-link {
-  color: #334155 !important;
-  margin-left: 10px;
-  transition: color 0.3s ease;
+  color: #475569 !important;
+  transition: all 0.3s ease;
 }
 
 .nav-link:hover {
   color: #0d6efd !important;
 }
 
-/* ======= CARRUSEL ======= */
-.carousel-container {
-  margin-top: 70px; /* por navbar fija */
+/* ===== HERO ===== */
+.hero {
+  height: 100vh;
+  background: url('Pagina web GeoSafe v2/galery/pexels-open-borders-27825960.jpg') center/cover no-repeat;
+  position: relative;
 }
 
-.carousel-item img {
-  height: 70vh;
-  object-fit: cover;
-  filter: brightness(90%);
+.hero .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(13, 110, 253, 0.45);
+  backdrop-filter: blur(3px);
 }
 
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 50%;
+.hero h1 {
+  letter-spacing: 1px;
 }
 
-/* ======= FOOTER ======= */
+.hero p {
+  font-weight: 300;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+}
+
+/* ===== FEATURES ===== */
+.features {
+  background-color: #ffffff;
+}
+
+.feature-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #e2e8f0;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+
+.feature-icon {
+  width: 80px;
+  height: auto;
+  opacity: 0.85;
+}
+
+/* ===== FOOTER ===== */
 .footer {
   background-color: #ffffff;
   border-top: 1px solid #e2e8f0;
-  text-align: center;
+  font-size: 0.9rem;
 }
 
-.footer-icon {
-  width: 90px;
-  height: auto;
-  opacity: 0.85;
-  transition: transform 0.3s ease;
-}
-
-.footer-icon:hover {
-  transform: scale(1.05);
-  opacity: 1;
-}
-
-.btn-outline-primary {
-  border-radius: 50px;
-  padding: 8px 20px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.btn-outline-primary:hover {
-  background-color: #0d6efd;
-  color: white;
-}
-
-/* ======= RESPONSIVE ======= */
+/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-  .carousel-item img {
-    height: 45vh;
+  .hero {
+    height: 80vh;
   }
 
-  .footer-icon {
-    width: 70px;
+  .hero h1 {
+    font-size: 1.8rem;
   }
 
-  .btn-outline-primary {
-    font-size: 0.9rem;
+  .feature-card {
+    margin-bottom: 1rem;
+  }
+
+  .feature-icon {
+    width: 65px;
   }
 }
 
 @media (max-width: 576px) {
-  .carousel-item img {
-    height: 35vh;
+  .hero {
+    height: 70vh;
   }
 
-  .footer-icon {
-    width: 60px;
+  .hero h1 {
+    font-size: 1.6rem;
   }
 
-  .btn-outline-primary {
-    font-size: 0.85rem;
+  .hero p {
+    font-size: 0.9rem;
   }
 }
