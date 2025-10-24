@@ -316,7 +316,15 @@
 
   <script>
     const API_URL = "https://geosafe-backend.vercel.app";
-    const map = L.map("map").setView([6.2442, -75.5812], 13);
+    const map = L.map("map",{
+        maxBounds: [
+    [6.15, -75.68], // suroeste
+    [6.40, -75.45]  // noreste
+  ],
+  maxBoundsViscosity: 1.0, // impide salir del área
+  minZoom: 12.3,
+  maxZoom: 19,
+    }).setView([6.2442, -75.5812], 13);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors",
@@ -428,5 +436,6 @@
   </script>
 </body>
 </html>
+
 
 
