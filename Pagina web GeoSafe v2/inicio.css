@@ -1,171 +1,109 @@
-
+/* ======= BASE ======= */
 * {
-    margin: 0%;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
-body { 
-    background-color: #87ceeb;
-    width: 100%;
-    max-width: 3000px;
+body {
+  background-color: #f8fafc;
+  color: #1e293b;
 }
 
-/* ===== HEADER RESPONSIVE ===== */
-.header {
-    width: 100%;
-    background-color: white;
-    color: black;
+/* ======= NAVBAR ======= */
+.navbar {
+  transition: all 0.3s ease;
+}
+
+.navbar-brand {
+  font-weight: 600;
+  color: #0d6efd !important;
 }
 
 .nav-link {
-    color: #000000 !important;
+  color: #334155 !important;
+  margin-left: 10px;
+  transition: color 0.3s ease;
 }
 
 .nav-link:hover {
-    color: #87CEEB !important;
+  color: #0d6efd !important;
 }
 
-/* ===== CAROUSEL RESPONSIVE ===== */
+/* ======= CARRUSEL ======= */
+.carousel-container {
+  margin-top: 70px; /* por navbar fija */
+}
+
 .carousel-item img {
-    height: 60vh;
-    object-fit: cover;
-    width: 100%;
+  height: 70vh;
+  object-fit: cover;
+  filter: brightness(90%);
 }
 
-
-.rectangulo {
-    width: 100%;
-    max-width: 2950px;
-    height: 150px;
-    background: #008b8b;
-    margin-top: -2.5cm;
-    position: relative;
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
 }
 
-.footer-content {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    height: 100%;
-    padding: 20px;
+/* ======= FOOTER ======= */
+.footer {
+  background-color: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  text-align: center;
 }
 
-.footer-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+.footer-icon {
+  width: 90px;
+  height: auto;
+  opacity: 0.85;
+  transition: transform 0.3s ease;
 }
 
-.simbolos img, .sim2 img, .sim3 img {
-    height: 25vh;
-    width: 300px;
-    object-fit: contain;
-    margin-bottom: 5px;
+.footer-icon:hover {
+  transform: scale(1.05);
+  opacity: 1;
 }
 
-.footer-btn {
-    padding: 10px 15px;
-    margin-top: 10px;
-    border-radius: 5px;
-    border: none;
-    background: white;
-    color: #008b8b;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
+.btn-outline-primary {
+  border-radius: 50px;
+  padding: 8px 20px;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
-.footer-btn:hover {
-    background: #20b2aa;
-    color: white;
-    transform: translateY(-2px);
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  color: white;
 }
 
-
-
-/* Dispositivos móviles */
+/* ======= RESPONSIVE ======= */
 @media (max-width: 768px) {
-    .carousel-item img {
-        height: 40vh;
-    }
+  .carousel-item img {
+    height: 45vh;
+  }
 
-    .rectangulo {
-        height: auto;
-        padding: 20px 0;
-        margin-top: -1cm;
-    }
+  .footer-icon {
+    width: 70px;
+  }
 
-    .footer-content {
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .simbolos img, .sim2 img, .sim3 img {
-        height: 70px;
-        width: 70px;
-    }
-
-    .footer-btn {
-        padding: 8px 12px;
-        font-size: 0.8rem;
-    }
-
-    .navbar-nav {
-        text-align: center;
-        padding-top: 10px;
-    }
+  .btn-outline-primary {
+    font-size: 0.9rem;
+  }
 }
 
-/* Móviles pequeños */
 @media (max-width: 576px) {
-    .carousel-item img {
-        height: 30vh;
-    }
+  .carousel-item img {
+    height: 35vh;
+  }
 
-    .rectangulo {
-        height: auto;
-        padding: 15px 0;
-        margin-top: -0.5cm;
-    }
+  .footer-icon {
+    width: 60px;
+  }
 
-    .simbolos img, .sim2 img, .sim3 img {
-        height: 100px;
-        width: 100px;
-    }
-
-    .footer-btn {
-        font-size: 0.7rem;
-        padding: 6px 10px;
-    }
-}
-
-/* Tablets */
-@media (min-width: 769px) and (max-width: 1024px) {
-    .carousel-item img {
-        height: 50vh;
-    }
-
-    .rectangulo {
-        height: 130px;
-    }
-
-    .simbolos img, .sim2 img, .sim3 img {
-        height: 90px;
-        width: 90px;
-    }
-}
-
-/* Desktops grandes */
-@media (min-width: 1200px) {
-    .carousel-item img {
-        height: 70vh;
-    }
-
-    .rectangulo {
-        max-width: 1200px;
-        margin-left: auto;
-        margin-right: auto;
-    }
+  .btn-outline-primary {
+    font-size: 0.85rem;
+  }
 }
