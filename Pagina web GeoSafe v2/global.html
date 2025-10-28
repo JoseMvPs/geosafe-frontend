@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeoSafe - Mapa Global de Incidentes</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      overflow: hidden;
+    }
+    
+    #map { 
+      height: 100vh; 
+      width: 100vw;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+
+    .nav-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: white;
+      padding: 12px 24px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+      cursor: pointer;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: #2d3748;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+      background: #667eea ;
+      color: white;
+    }
+
+    .nav-button-secondary {
+      position: absolute;
+      top: 20px;
+      left: 200px;
+      background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+      cursor: pointer;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-button-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(72, 187, 120, 0.4);
+    }
+
+    .custom-popup {
+      min-width: 300px;
+    }
+
+    .popup-header {
+      background: #667eea;
+      color: white;
+      padding: 12px 16px;
+      margin: -12px -16px 12px;
+      border-radius: 8px 8px 0 0;
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .popup-content {
+      padding: 0 4px;
+    }
+
+    .incident-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .badge-hurto { background: #fed7d7; color: #c53030; }
+    .badge-atraco { background: #fbd38d; color: #c05621; }
+    .badge-asalto { background: #fbb6ce; color: #b83280; }
+    .badge-vandalismo { background: #d6bcfa; color: #6b46c1; }
+    .badge-accidente { background: #90cdf4; color: #2c5282; }
+    .badge-sospechoso { background: #fef08a; color: #854d0e; }
+    .badge-otro { background: #e2e8f0; color: #2d3748; }
+
+    .info-row {
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .info-row strong {
+      color: #2d3748;
+      display: block;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .info-row p {
+      color: #4a5568;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .delete-btn {
+      background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      width: 100%;
+      margin-top: 12px;
+      transition: all 0.3s;
+    }
+
+    .delete-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(245, 101, 101, 0.4);
+    }
+
+    .timestamp {
+      font-size: 12px;
+      color: #718096;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .stats-panel {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+      min-width: 250px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .stats-panel h3 {
+      margin-bottom: 16px;
+      color: #2d3748;
+      font-size: 18px;
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .stat-item:last-child {
+      border-bottom: none;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #4a5568;
+    }
+
+    .stat-value {
+      font-weight: 600;
+      color: #667eea;
+      font-size: 16px;
+    }
+
+    .marker-icon {
+      background: white;
+      border-radius: 50%;
+      border: 3px solid;
+      width: 32px !important;
+      height: 32px !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .marker-hurto { border-color: #fc8181; background: #fed7d7; }
+    .marker-atraco { border-color: #f6ad55; background: #fbd38d; }
+    .marker-asalto { border-color: #f687b3; background: #fbb6ce; }
+    .marker-vandalismo { border-color: #b794f4; background: #d6bcfa; }
+    .marker-accidente { border-color: #63b3ed; background: #90cdf4; }
+    .marker-sospechoso { border-color: #fbbf24; background: #fef08a; }
+    .marker-otro { border-color: #a0aec0; background: #e2e8f0; }
+
+    .refresh-indicator {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      font-size: 12px;
+      color: #718096;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .refresh-indicator.active {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <button class="nav-button" onclick="window.location.href='index.html'">
+    Volver al Inicio
+  </button>
+
+  <button class="nav-button-secondary" onclick="window.location.href='local.html'">
+    Reportar Incidente
+  </button>
+
+  <div id="map"></div>
+
+  <div class="stats-panel">
+    <h3>📊 Estadísticas</h3>
+    <div id="statsContent">
+      <div class="stat-item">
+        <span class="stat-label">Total de incidentes</span>
+        <span class="stat-value" id="totalIncidentes">0</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="refresh-indicator" id="refreshIndicator">
+    🔄 Actualizando mapa...
+  </div>
+
+  <script>
+    const API_URL = "https://geosafe-backend.vercel.app";
+    const map = L.map("map",{
+        maxBounds: [
+    [6.15, -75.68],
+    [6.40, -75.45]
+  ],
+  maxBoundsViscosity: 1.0,
+  minZoom: 12.3,
+  maxZoom: 19,
+    }).setView([6.2442, -75.5812], 13);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors",
+      maxZoom: 19,
+    }).addTo(map);
+
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 100);
+
+    let marcadores = [];
+
+    const incidentIcons = {
+      hurto: '🎒',
+      atraco: '🔫',
+      asalto: '⚠️',
+      vandalismo: '🔨',
+      accidente: '🚗',
+      sospechoso: '👁️',
+      otro: '📌'
+    };
+
+    const incidentNames = {
+      hurto: 'Hurto / Robo',
+      atraco: 'Atraco a mano armada',
+      asalto: 'Asalto / Agresión',
+      vandalismo: 'Vandalismo',
+      accidente: 'Accidente de tránsito',
+      sospechoso: 'Actividad sospechosa',
+      otro: 'Otro'
+    };
+
+    function formatearFecha(fechaString) {
+      const fecha = new Date(fechaString);
+      const opciones = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      };
+      return fecha.toLocaleDateString('es-ES', opciones);
+    }
+
+    function formatearHoraSuceso(horaString) {
+      const fecha = new Date(horaString);
+      const opciones = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      };
+      return fecha.toLocaleDateString('es-ES', opciones);
+    }
+
+    async function cargarMarcadores() {
+      const indicator = document.getElementById('refreshIndicator');
+      indicator.classList.add('active');
+
+      try {
+        const res = await fetch(`${API_URL}/markers`);
+        const data = await res.json();
+
+        marcadores.forEach(m => map.removeLayer(m));
+        marcadores = [];
+
+        actualizarEstadisticas(data);
+
+        data.forEach((m) => {
+          const icono = incidentIcons[m.tipo_incidente] || '📌';
+          
+          const customIcon = L.divIcon({
+            html: icono,
+            className: `marker-icon marker-${m.tipo_incidente}`,
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+            popupAnchor: [0, -32]
+          });
+
+          const marker = L.marker([m.lat, m.lon], { icon: customIcon }).addTo(map);
+
+          const popupContent = `
+            <div class="custom-popup">
+              <div class="popup-header">
+                ${icono} ${incidentNames[m.tipo_incidente] || 'Incidente'}
+              </div>
+              <div class="popup-content">
+                <span class="incident-badge badge-${m.tipo_incidente}">
+                  ${incidentNames[m.tipo_incidente] || 'Otro'}
+                </span>
+
+                <div class="info-row">
+                  <strong>📝 Descripción:</strong>
+                  <p>${m.descripcion}</p>
+                </div>
+
+                <div class="info-row">
+                  <strong>🕐 Hora del suceso:</strong>
+                  <p>${formatearHoraSuceso(m.hora_suceso)}</p>
+                </div>
+
+                ${m.notas ? `
+                  <div class="info-row">
+                    <strong>📋 Notas adicionales:</strong>
+                    <p>${m.notas}</p>
+                  </div>
+                ` : ''}
+
+                <div class="timestamp">
+                  Reportado el ${formatearFecha(m.fecha_creacion)}
+                </div>
+
+               
+              </div>
+            </div>
+          `;
+
+          marker.bindPopup(popupContent, {
+            maxWidth: 350,
+            className: 'custom-popup'
+          });
+
+          marcadores.push(marker);
+        });
+      } catch (error) {
+        console.error('Error al cargar marcadores:', error);
+      } finally {
+        setTimeout(() => {
+          indicator.classList.remove('active');
+        }, 1000);
+      }
+    }
+
+    function actualizarEstadisticas(data) {
+      const total = data.length;
+      
+      const conteo = {};
+      data.forEach(m => {
+        conteo[m.tipo_incidente] = (conteo[m.tipo_incidente] || 0) + 1;
+      });
+
+      let statsHTML = `
+        <div class="stat-item">
+          <span class="stat-label">Total de incidentes</span>
+          <span class="stat-value">${total}</span>
+        </div>
+      `;
+
+      Object.entries(conteo).forEach(([tipo, cantidad]) => {
+        statsHTML += `
+          <div class="stat-item">
+            <span class="stat-label">${incidentIcons[tipo]} ${incidentNames[tipo]}</span>
+            <span class="stat-value">${cantidad}</span>
+          </div>
+        `;
+      });
+
+      document.getElementById('statsContent').innerHTML = statsHTML;
+    }
+
+    async function eliminarMarcador(id) {
+      const confirmar = confirm("⚠️ ¿Estás seguro de que quieres eliminar este reporte de incidente?");
+      if (!confirmar) return;
+
+      try {
+        const res = await fetch(`${API_URL}/markers/${id}`, {
+          method: "DELETE",
+        });
+
+        if (res.ok) {
+          alert("✅ Reporte eliminado correctamente.");
+          cargarMarcadores();
+        } else {
+          alert("❌ Error al eliminar el reporte.");
+        }
+      } catch (error) {
+        alert("❌ Error de conexión al eliminar el reporte.");
+        console.error(error);
+      }
+    }
+
+    window.eliminarMarcador = eliminarMarcador;
+
+    cargarMarcadores();
+    setInterval(cargarMarcadores, 15000);
+  </script>
+</body>
+</html>
